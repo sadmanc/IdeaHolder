@@ -39,13 +39,16 @@ npm run gen-secret
 
 Prints a 64-char hex string. This is `COOKIE_SECRET`.
 
-### 5. Fill in `.env.local`
+### 5. Create `.env.local`
 
-```bash
-cp .env.example .env.local
+Make a file called `.env.local` in the project root with these four keys, filled in from steps 2–4:
+
 ```
-
-Edit `.env.local` and paste in the four values from steps 2–4.
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+APP_PASSWORD_HASH=
+COOKIE_SECRET=
+```
 
 ### 6. Run locally
 
