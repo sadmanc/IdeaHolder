@@ -1,14 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { Idea } from "@/lib/supabase";
+import { deleteIdea } from "@/app/actions";
 
-function formatDate(iso: string): string {
+function formatDateTime(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
+  return d.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
   });
 }
 
@@ -54,7 +58,31 @@ export default function IdeaList({ ideas }: { ideas: Idea[] }) {
                 <span className="font-mono font-medium text-neutral-700">
                   #{idea.number}
                 </span>
-                <span>{formatDate(idea.created_at)}</span>
+                <span suppressHydrationWarning>
+                  {formatDateTime(idea.created_at)}
+                </span>
+                <form
+                  action={deleteIdea}
+                  onSubmit={(e: FormEvent<HTMLFormElement>) => {
+                    if (
+                      !window.confirm(`Delete idea #${idea.number}?`)
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="ml-auto"
+                >
+                  <input type="hidden" name="id" value={idea.id} />
+                  <button
+                    type="submit"
+                    aria-label={`Delete idea #${idea.number}`}
+                    className="leading-none text-neutral-400 transition-colors hover:text-red-600"
+                  >
+                    <span aria-hidden="true" className="text-base">
+                      ×
+                    </span>
+                  </button>
+                </form>
               </div>
               <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed text-neutral-900">
                 {idea.content}

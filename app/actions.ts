@@ -53,3 +53,15 @@ export async function logout(): Promise<void> {
   await clearSessionCookie();
   redirect("/login");
 }
+
+export async function deleteIdea(formData: FormData): Promise<void> {
+  const raw = formData.get("id");
+  const id = typeof raw === "string" ? raw.trim() : "";
+  if (!id) return;
+  const supabase = createServerClient();
+  const { error } = await supabase.from("ideas").delete().eq("id", id);
+  if (error) {
+    console.error("[deleteIdea]", error.message);
+  }
+  revalidatePath("/");
+}
