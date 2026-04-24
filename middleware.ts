@@ -4,7 +4,13 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname === "/login") {
+  if (
+    pathname === "/login" ||
+    pathname === "/icon" ||
+    pathname.startsWith("/icon/") ||
+    pathname === "/apple-icon" ||
+    pathname.startsWith("/apple-icon/")
+  ) {
     return NextResponse.next();
   }
 

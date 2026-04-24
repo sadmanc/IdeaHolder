@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import type { Idea } from "@/lib/supabase";
 import { deleteIdea } from "@/app/actions";
 
@@ -14,6 +14,16 @@ function formatDateTime(iso: string): string {
     minute: "2-digit",
     hour12: true,
   });
+}
+
+function ClientTime({ iso }: { iso: string }) {
+  // Render only after mount so the timestamp is formatted in the user's
+  // local timezone, not the server's (UTC on Vercel).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return (
+    <span suppressHydrationWarning>{mounted ? formatDateTime(iso) : ""}</span>
+  );
 }
 
 export default function IdeaList({ ideas }: { ideas: Idea[] }) {
@@ -58,9 +68,7 @@ export default function IdeaList({ ideas }: { ideas: Idea[] }) {
                 <span className="font-mono font-medium text-neutral-700">
                   #{idea.number}
                 </span>
-                <span suppressHydrationWarning>
-                  {formatDateTime(idea.created_at)}
-                </span>
+                <ClientTime iso={idea.created_at} />
                 <form
                   action={deleteIdea}
                   onSubmit={(e: FormEvent<HTMLFormElement>) => {

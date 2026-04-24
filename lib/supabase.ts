@@ -5,6 +5,7 @@ export type Idea = {
   number: number;
   content: string;
   created_at: string;
+  deleted_at: string | null;
 };
 
 export function createServerClient(): SupabaseClient {

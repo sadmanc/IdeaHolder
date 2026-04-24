@@ -1,9 +1,21 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
-export default function Icon() {
+export function generateImageMetadata() {
+  return [
+    { id: "tab", size: { width: 32, height: 32 } },
+    { id: "android", size: { width: 192, height: 192 } },
+    { id: "android-large", size: { width: 512, height: 512 } },
+  ];
+}
+
+export default function Icon({ id }: { id: string }) {
+  const px =
+    id === "tab" ? 32 : id === "android" ? 192 : id === "android-large" ? 512 : 64;
+  const fontSize = Math.round(px * 0.55);
+  const radius = Math.round(px * 0.18);
+
   return new ImageResponse(
     (
       <div
@@ -15,15 +27,16 @@ export default function Icon() {
           justifyContent: "center",
           background: "#0f0f0f",
           color: "#fafaf9",
-          fontSize: 46,
+          fontSize,
           fontWeight: 700,
-          letterSpacing: -3,
+          letterSpacing: -Math.round(fontSize * 0.08),
           fontFamily: "system-ui, sans-serif",
+          borderRadius: radius,
         }}
       >
         ih
       </div>
     ),
-    size,
+    { width: px, height: px },
   );
 }

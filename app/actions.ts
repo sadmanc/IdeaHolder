@@ -59,9 +59,35 @@ export async function deleteIdea(formData: FormData): Promise<void> {
   const id = typeof raw === "string" ? raw.trim() : "";
   if (!id) return;
   const supabase = createServerClient();
-  const { error } = await supabase.from("ideas").delete().eq("id", id);
-  if (error) {
-    console.error("[deleteIdea]", error.message);
-  }
+  const { error } = await supabase
+    .from("ideas")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) console.error("[deleteIdea]", error.message);
   revalidatePath("/");
+  revalidatePath("/trash");
+}
+
+export async function restoreIdea(formData: FormData): Promise<void> {
+  const raw = formData.get("id");
+  const id = typeof raw === "string" ? raw.trim() : "";
+  if (!id) return;
+  const supabase = createServerClient();
+  const { error } = await supabase
+    .from("ideas")
+    .update({ deleted_at: null })
+    .eq("id", id);
+  if (error) console.error("[restoreIdea]", error.message);
+  revalidatePath("/");
+  revalidatePath("/trash");
+}
+
+export async function permaDeleteIdea(formData: FormData): Promise<void> {
+  const raw = formData.get("id");
+  const id = typeof raw === "string" ? raw.trim() : "";
+  if (!id) return;
+  const supabase = createServerClient();
+  const { error } = await supabase.from("ideas").delete().eq("id", id);
+  if (error) console.error("[permaDeleteIdea]", error.message);
+  revalidatePath("/trash");
 }
