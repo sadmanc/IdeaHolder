@@ -9,7 +9,8 @@ export async function middleware(req: NextRequest) {
     pathname === "/icon" ||
     pathname.startsWith("/icon/") ||
     pathname === "/apple-icon" ||
-    pathname.startsWith("/apple-icon/")
+    pathname.startsWith("/apple-icon/") ||
+    pathname === "/api/cron/notify"
   ) {
     return NextResponse.next();
   }

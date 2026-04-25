@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import RegisterServiceWorker from "@/components/RegisterServiceWorker";
 
 export const metadata: Metadata = {
   title: "IdeaHolder",
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen" suppressHydrationWarning>
+        <RegisterServiceWorker />
         {children}
       </body>
     </html>
