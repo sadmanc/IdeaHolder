@@ -30,33 +30,45 @@ export default function TrashRemindersList({
 }) {
   if (reminders.length === 0) {
     return (
-      <p className="py-6 text-sm text-neutral-500">No deleted reminders.</p>
+      <p className="rounded-[var(--radius-card)] border border-dashed border-[color:var(--color-line)] bg-[color:var(--color-surface)]/50 px-3 py-6 text-center text-sm text-[color:var(--color-ink-3)]">
+        Nothing here.
+      </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-neutral-200">
+    <ul className="space-y-2">
       {reminders.map((r) => (
-        <li key={r.id} className="py-4">
-          <div className="mb-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-neutral-500">
-            <span className="font-mono font-medium text-neutral-700">
+        <li
+          key={r.id}
+          className="rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+        >
+          <div className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-wide text-[color:var(--color-ink-3)]">
+            <span className="font-mono text-[color:var(--color-ink-2)]">
               #{r.number}
             </span>
-            <span>
+            <span aria-hidden="true">·</span>
+            <span className="normal-case tracking-normal">
               added <ClientTime iso={r.created_at} />
             </span>
             {r.deadline ? (
-              <span>
-                · due <ClientTime iso={r.deadline} />
-              </span>
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="normal-case tracking-normal">
+                  due <ClientTime iso={r.deadline} />
+                </span>
+              </>
             ) : null}
             {r.deleted_at ? (
-              <span className="text-neutral-400">
-                · deleted <ClientTime iso={r.deleted_at} />
-              </span>
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="normal-case tracking-normal text-[color:var(--color-ink-4)]">
+                  deleted <ClientTime iso={r.deleted_at} />
+                </span>
+              </>
             ) : null}
           </div>
-          <p className="mb-2 whitespace-pre-wrap break-words text-[15px] leading-relaxed text-neutral-700">
+          <p className="mb-3 whitespace-pre-wrap break-words text-[15px] leading-relaxed text-[color:var(--color-ink-2)]">
             {r.content}
           </p>
           <div className="flex items-center gap-2">
@@ -64,7 +76,7 @@ export default function TrashRemindersList({
               <input type="hidden" name="id" value={r.id} />
               <button
                 type="submit"
-                className="rounded border border-neutral-300 bg-white px-3 py-1 text-xs font-medium text-neutral-800 transition-colors hover:border-neutral-500"
+                className="rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[color:var(--color-ink-2)] transition hover:border-[color:var(--color-line-strong)] hover:text-[color:var(--color-ink)]"
               >
                 Restore
               </button>
@@ -84,7 +96,7 @@ export default function TrashRemindersList({
               <input type="hidden" name="id" value={r.id} />
               <button
                 type="submit"
-                className="rounded border border-transparent px-3 py-1 text-xs font-medium text-red-600 transition-colors hover:border-red-200 hover:bg-red-50"
+                className="rounded-[var(--radius-input)] border border-transparent px-3 py-1.5 text-xs font-medium text-[color:var(--color-danger)] transition hover:border-[color:var(--color-danger)]/30 hover:bg-[color:var(--color-danger)]/5"
               >
                 Delete forever
               </button>

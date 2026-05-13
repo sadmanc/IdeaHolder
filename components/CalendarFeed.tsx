@@ -28,40 +28,51 @@ export default function CalendarFeed({ token }: { token: string }) {
 
   if (!token) {
     return (
-      <div className="rounded border border-neutral-200 bg-white p-3">
-        <h3 className="text-sm font-medium text-neutral-900">Calendar feed</h3>
-        <p className="mt-1 text-xs text-neutral-600">
-          Set <code className="font-mono">CALENDAR_FEED_TOKEN</code> in your
-          environment to enable the subscribable feed.
+      <div className="rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-sm)]">
+        <h3 className="text-sm font-semibold text-[color:var(--color-ink)]">
+          Calendar feed
+        </h3>
+        <p className="mt-1.5 text-xs text-[color:var(--color-ink-2)]">
+          Set{" "}
+          <code className="rounded bg-[color:var(--color-surface-2)] px-1 py-0.5 font-mono text-[11px]">
+            CALENDAR_FEED_TOKEN
+          </code>{" "}
+          in your environment to enable the subscribable feed.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded border border-neutral-200 bg-white p-3">
-      <h3 className="text-sm font-medium text-neutral-900">Calendar feed</h3>
-      <p className="mt-1 text-xs text-neutral-600">
+    <div className="rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-sm)]">
+      <h3 className="text-sm font-semibold text-[color:var(--color-ink)]">
+        Calendar feed
+      </h3>
+      <p className="mt-1.5 text-xs leading-relaxed text-[color:var(--color-ink-2)]">
         Subscribe to this URL in Apple Calendar (File → New Calendar
-        Subscription) or Google Calendar (Other calendars → From URL). Reminders
-        with deadlines appear as events.
+        Subscription) or Google Calendar (Other calendars → From URL).
+        Reminders with deadlines appear as events.
       </p>
-      <div className="mt-2 flex items-center gap-2">
+      <div className="mt-3 flex items-center gap-2">
         <input
           type="text"
           readOnly
           value={url}
           onFocus={(e) => e.currentTarget.select()}
-          className="w-full rounded border border-neutral-300 bg-neutral-50 px-2 py-1 font-mono text-xs text-neutral-700"
+          className="w-full rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface-2)] px-2 py-1.5 font-mono text-[11px] text-[color:var(--color-ink-2)] focus:outline-none"
         />
         <button
           type="button"
           onClick={copy}
-          className="shrink-0 rounded border border-neutral-300 bg-white px-3 py-1 text-xs font-medium text-neutral-800 transition-colors hover:border-neutral-500"
+          className="shrink-0 rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[color:var(--color-ink-2)] transition hover:border-[color:var(--color-line-strong)] hover:text-[color:var(--color-ink)]"
         >
           {copied ? "Copied" : "Copy"}
         </button>
       </div>
+      <p className="mt-2 text-[11px] text-[color:var(--color-ink-4)]">
+        Treat the URL like a password — anyone with it can read your
+        reminders.
+      </p>
     </div>
   );
 }

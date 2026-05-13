@@ -24,25 +24,40 @@ export default async function NavTabs({ active }: { active: Tab }) {
   const trashCount = (ideaTrash.count ?? 0) + (reminderTrash.count ?? 0);
 
   return (
-    <nav className="mb-6 flex items-center gap-1 text-sm">
+    <nav
+      role="tablist"
+      aria-label="Sections"
+      className="mb-6 inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-1 text-sm shadow-[var(--shadow-sm)]"
+    >
       {tabs.map((t) => {
         const isActive = t.key === active;
-        const label =
-          t.key === "trash" && trashCount > 0
-            ? `${t.label} (${trashCount})`
-            : t.label;
+        const isTrash = t.key === "trash";
         return (
           <Link
             key={t.key}
             href={t.href}
+            role="tab"
+            aria-selected={isActive}
             className={
-              "rounded-md px-3 py-1.5 transition-colors " +
+              "rounded-[var(--radius-pill)] px-3.5 py-1.5 transition " +
               (isActive
-                ? "bg-black text-white"
-                : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900")
+                ? "bg-[color:var(--color-ink)] text-white shadow-[var(--shadow-sm)]"
+                : "text-[color:var(--color-ink-2)] hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-ink)]")
             }
           >
-            {label}
+            <span>{t.label}</span>
+            {isTrash && trashCount > 0 && (
+              <span
+                className={
+                  "ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium leading-none " +
+                  (isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-[color:var(--color-surface-2)] text-[color:var(--color-ink-3)]")
+                }
+              >
+                {trashCount}
+              </span>
+            )}
           </Link>
         );
       })}

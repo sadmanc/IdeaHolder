@@ -36,26 +36,35 @@ export default function IdeaForm() {
   };
 
   return (
-    <form ref={formRef} action={formAction} className="mb-6">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="mb-6 rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition focus-within:shadow-[var(--shadow-md)]"
+    >
       <textarea
         ref={textareaRef}
         name="content"
         rows={3}
-        placeholder="What's the idea? (⌘/Ctrl + Enter to save)"
-        className="w-full resize-y rounded border border-neutral-300 bg-white p-3 text-base leading-snug focus:border-neutral-500 focus:outline-none"
+        placeholder="What just hit you? Capture it before it slips."
+        className="w-full resize-y rounded-[var(--radius-input)] bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-[color:var(--color-ink)] placeholder:text-[color:var(--color-ink-4)] focus:outline-none"
         onKeyDown={onKeyDown}
       />
-      <div className="mt-2 flex items-center justify-between gap-3">
-        <span className="min-h-[1.25rem] text-xs text-red-600">
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <span className="min-h-[1.25rem] text-xs text-[color:var(--color-danger)]">
           {state.error}
         </span>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-60"
-        >
-          {pending ? "Saving…" : "Save"}
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="hidden text-[11px] text-[color:var(--color-ink-4)] sm:inline">
+            ⌘ + Enter to save
+          </span>
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-[var(--radius-input)] bg-[color:var(--color-accent)] px-4 py-1.5 text-sm font-medium text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:opacity-50"
+          >
+            {pending ? "Saving…" : "Save idea"}
+          </button>
+        </div>
       </div>
     </form>
   );

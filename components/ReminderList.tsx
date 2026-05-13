@@ -27,9 +27,7 @@ function ClientTime({ iso }: { iso: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   return (
-    <span suppressHydrationWarning>
-      {mounted ? formatDeadline(iso) : ""}
-    </span>
+    <span suppressHydrationWarning>{mounted ? formatDeadline(iso) : ""}</span>
   );
 }
 
@@ -46,7 +44,11 @@ function ClientRelative({ iso }: { iso: string }) {
   return (
     <span
       suppressHydrationWarning
-      className={overdue ? "text-red-600" : "text-neutral-500"}
+      className={
+        overdue
+          ? "font-medium text-[color:var(--color-danger)]"
+          : "text-[color:var(--color-ink-3)]"
+      }
       data-tick={tick}
     >
       {relativeDeadline(iso)}
@@ -76,38 +78,53 @@ function ReminderRow({ reminder }: { reminder: Reminder }) {
   const completed = reminder.completed_at !== null;
 
   return (
-    <li className="py-4">
+    <li
+      className={
+        "group animate-in rounded-[var(--radius-card)] border bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition hover:shadow-[var(--shadow-md)] " +
+        (completed
+          ? "border-[color:var(--color-line)] opacity-70"
+          : "border-[color:var(--color-line)] hover:border-[color:var(--color-line-strong)]")
+      }
+    >
       {editing ? (
         <EditForm reminder={reminder} onDone={() => setEditing(false)} />
       ) : (
         <>
-          <div className="mb-1 flex items-baseline gap-3 text-xs text-neutral-500">
-            <span className="font-mono font-medium text-neutral-700">
+          <div className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-wide text-[color:var(--color-ink-3)]">
+            <span className="font-mono text-[color:var(--color-accent)]">
               #{reminder.number}
             </span>
             {reminder.deadline ? (
               <>
-                <span className={completed ? "" : ""}>
+                <span aria-hidden="true">·</span>
+                <span className="normal-case tracking-normal">
                   Due <ClientTime iso={reminder.deadline} />
                 </span>
                 {!completed && (
-                  <span aria-hidden="true" className="text-neutral-300">
-                    ·
-                  </span>
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span className="normal-case tracking-normal">
+                      <ClientRelative iso={reminder.deadline} />
+                    </span>
+                  </>
                 )}
-                {!completed && <ClientRelative iso={reminder.deadline} />}
               </>
             ) : (
-              <span className="text-neutral-400">No deadline</span>
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="normal-case tracking-normal text-[color:var(--color-ink-4)]">
+                  No deadline
+                </span>
+              </>
             )}
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-1">
               {completed ? (
                 <form action={uncompleteReminder}>
                   <input type="hidden" name="id" value={reminder.id} />
                   <button
                     type="submit"
                     aria-label={`Uncomplete reminder #${reminder.number}`}
-                    className="text-xs text-neutral-400 transition-colors hover:text-neutral-700"
+                    className="rounded-md px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-[color:var(--color-ink-3)] transition hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-ink)]"
                   >
                     Undo
                   </button>
@@ -118,12 +135,21 @@ function ReminderRow({ reminder }: { reminder: Reminder }) {
                   <button
                     type="submit"
                     aria-label={`Complete reminder #${reminder.number}`}
-                    className="leading-none text-neutral-400 transition-colors hover:text-green-600"
                     title="Mark complete"
+                    className="rounded-md p-1 leading-none text-[color:var(--color-ink-4)] transition hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-success)]"
                   >
-                    <span aria-hidden="true" className="text-base">
-                      ✓
-                    </span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m3 8 3.5 3.5L13 5" />
+                    </svg>
                   </button>
                 </form>
               )}
@@ -132,12 +158,21 @@ function ReminderRow({ reminder }: { reminder: Reminder }) {
                   type="button"
                   onClick={() => setEditing(true)}
                   aria-label={`Edit reminder #${reminder.number}`}
-                  className="leading-none text-neutral-400 transition-colors hover:text-neutral-900"
                   title="Edit"
+                  className="rounded-md p-1 leading-none text-[color:var(--color-ink-4)] opacity-0 transition group-hover:opacity-100 hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-ink)] focus:opacity-100"
                 >
-                  <span aria-hidden="true" className="text-sm">
-                    ✎
-                  </span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m12 2 2 2-9 9-3 1 1-3z" />
+                  </svg>
                 </button>
               )}
               <form
@@ -154,12 +189,20 @@ function ReminderRow({ reminder }: { reminder: Reminder }) {
                 <button
                   type="submit"
                   aria-label={`Delete reminder #${reminder.number}`}
-                  className="leading-none text-neutral-400 transition-colors hover:text-red-600"
                   title="Delete"
+                  className="rounded-md p-1 leading-none text-[color:var(--color-ink-4)] opacity-0 transition group-hover:opacity-100 hover:bg-[color:var(--color-surface-2)] hover:text-[color:var(--color-danger)] focus:opacity-100"
                 >
-                  <span aria-hidden="true" className="text-base">
-                    ×
-                  </span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  >
+                    <path d="M3 3l10 10M13 3 3 13" />
+                  </svg>
                 </button>
               </form>
             </div>
@@ -168,8 +211,8 @@ function ReminderRow({ reminder }: { reminder: Reminder }) {
             className={
               "whitespace-pre-wrap break-words text-[15px] leading-relaxed " +
               (completed
-                ? "text-neutral-400 line-through"
-                : "text-neutral-900")
+                ? "text-[color:var(--color-ink-3)] line-through"
+                : "text-[color:var(--color-ink)]")
             }
           >
             {reminder.content}
@@ -207,23 +250,23 @@ function EditForm({
   }, [state, onDone]);
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-2">
+    <form ref={formRef} action={formAction} className="space-y-3">
       <input type="hidden" name="id" value={reminder.id} />
       <textarea
         name="content"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={3}
-        className="w-full resize-y rounded border border-neutral-300 bg-white p-2 text-[15px] focus:border-neutral-500 focus:outline-none"
+        className="w-full resize-y rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-2 text-[15px] text-[color:var(--color-ink)] focus:outline-none"
       />
-      <div className="flex items-center gap-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
         {hasDeadline ? (
           <>
             <input
               type="datetime-local"
               value={deadlineLocal}
               onChange={(e) => setDeadlineLocal(e.target.value)}
-              className="rounded border border-neutral-300 bg-white px-2 py-1 text-sm focus:border-neutral-500 focus:outline-none"
+              className="rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-1 text-sm text-[color:var(--color-ink)] focus:outline-none"
             />
             <input type="hidden" name="deadline" value={iso} />
             <button
@@ -232,7 +275,7 @@ function EditForm({
                 setHasDeadline(false);
                 setDeadlineLocal("");
               }}
-              className="text-neutral-500 transition-colors hover:text-neutral-900"
+              className="text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
             >
               Remove deadline
             </button>
@@ -241,7 +284,7 @@ function EditForm({
           <button
             type="button"
             onClick={() => setHasDeadline(true)}
-            className="text-neutral-500 transition-colors hover:text-neutral-900"
+            className="text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
           >
             + Add deadline
           </button>
@@ -251,19 +294,21 @@ function EditForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-black px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-60"
+          className="rounded-[var(--radius-input)] bg-[color:var(--color-accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:opacity-50"
         >
           {pending ? "Saving…" : "Save"}
         </button>
         <button
           type="button"
           onClick={onDone}
-          className="text-xs text-neutral-500 transition-colors hover:text-neutral-900"
+          className="text-xs text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
         >
           Cancel
         </button>
         {state.error && (
-          <span className="text-xs text-red-600">{state.error}</span>
+          <span className="text-xs text-[color:var(--color-danger)]">
+            {state.error}
+          </span>
         )}
       </div>
     </form>
@@ -309,28 +354,65 @@ export default function ReminderList({ reminders }: { reminders: Reminder[] }) {
 
   return (
     <section>
-      <div className="sticky top-0 z-10 -mx-5 bg-[color:var(--color-canvas)]/90 px-5 py-2 backdrop-blur">
-        <input
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={
-            active.length
-              ? `Search ${active.length} reminder${active.length === 1 ? "" : "s"}…`
-              : "Search…"
-          }
-          className="w-full rounded border border-neutral-300 bg-white px-3 py-2 text-base focus:border-neutral-500 focus:outline-none"
-        />
+      <div className="sticky top-0 z-10 -mx-5 mb-3 bg-[color:var(--color-canvas)]/85 px-5 py-2 backdrop-blur">
+        <div className="relative">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 20 20"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--color-ink-4)]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          >
+            <circle cx="8.5" cy="8.5" r="5.5" />
+            <path d="m13 13 4 4" strokeLinecap="round" />
+          </svg>
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={
+              active.length
+                ? `Search ${active.length} reminder${active.length === 1 ? "" : "s"} or #number`
+                : "Search…"
+            }
+            className="w-full rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] py-2 pl-9 pr-3 text-[15px] text-[color:var(--color-ink)] placeholder:text-[color:var(--color-ink-4)] shadow-[var(--shadow-sm)] transition focus:outline-none"
+          />
+        </div>
       </div>
 
       {filteredActive.length === 0 ? (
-        <p className="py-10 text-center text-sm text-neutral-500">
-          {active.length === 0
-            ? "No reminders yet. Add one above."
-            : "No matches."}
-        </p>
+        active.length === 0 ? (
+          <div className="rounded-[var(--radius-card)] border border-dashed border-[color:var(--color-line-strong)] bg-[color:var(--color-surface)]/50 p-8 text-center">
+            <div className="mx-auto mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent-ink)]">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="13" r="8" />
+                <path d="M12 9v4l2.5 2.5M8 3.5 5 5M16 3.5l3 1.5" />
+              </svg>
+            </div>
+            <p className="text-[15px] font-medium text-[color:var(--color-ink)]">
+              No active reminders.
+            </p>
+            <p className="mt-1 text-sm text-[color:var(--color-ink-3)]">
+              Add one with an optional deadline. The 9 AM daily digest and the
+              24-hour pre-alarm will keep things in view.
+            </p>
+          </div>
+        ) : (
+          <p className="py-12 text-center text-sm text-[color:var(--color-ink-3)]">
+            No matches.
+          </p>
+        )
       ) : (
-        <ul className="divide-y divide-neutral-200">
+        <ul className="space-y-2">
           {filteredActive.map((r) => (
             <ReminderRow key={r.id} reminder={r} />
           ))}
@@ -338,17 +420,28 @@ export default function ReminderList({ reminders }: { reminders: Reminder[] }) {
       )}
 
       {completed.length > 0 && (
-        <div className="mt-6 border-t border-neutral-200 pt-3">
+        <div className="mt-8 border-t border-[color:var(--color-line)] pt-4">
           <button
             type="button"
             onClick={() => setShowCompleted((v) => !v)}
-            className="flex items-center gap-1 text-xs text-neutral-500 transition-colors hover:text-neutral-900"
+            className="inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-xs font-medium text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
           >
-            <span>{showCompleted ? "▾" : "▸"}</span>
-            <span>Completed ({completed.length})</span>
+            <span
+              aria-hidden="true"
+              className={
+                "inline-block transition-transform " +
+                (showCompleted ? "rotate-90" : "")
+              }
+            >
+              ▸
+            </span>
+            <span>Completed</span>
+            <span className="text-[color:var(--color-ink-4)]">
+              ({completed.length})
+            </span>
           </button>
           {showCompleted && (
-            <ul className="mt-2 divide-y divide-neutral-200">
+            <ul className="mt-3 space-y-2">
               {completed.map((r) => (
                 <ReminderRow key={r.id} reminder={r} />
               ))}

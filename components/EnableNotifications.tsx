@@ -138,10 +138,22 @@ export default function EnableNotifications({
     });
   }
 
+  const statusDot =
+    status === "subscribed"
+      ? "bg-[color:var(--color-success)]"
+      : status === "denied" || status === "unsupported"
+        ? "bg-[color:var(--color-warn)]"
+        : "bg-[color:var(--color-ink-4)]";
+
   return (
-    <div className="rounded border border-neutral-200 bg-white p-3">
-      <h3 className="text-sm font-medium text-neutral-900">Notifications</h3>
-      <div className="mt-1 text-xs text-neutral-600">
+    <div className="rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4 shadow-[var(--shadow-sm)]">
+      <div className="flex items-center gap-2">
+        <span className={`h-1.5 w-1.5 rounded-full ${statusDot}`} aria-hidden />
+        <h3 className="text-sm font-semibold text-[color:var(--color-ink)]">
+          Push notifications
+        </h3>
+      </div>
+      <div className="mt-1.5 text-xs text-[color:var(--color-ink-2)]">
         {status === "loading" && <p>Checking…</p>}
         {status === "unsupported" && (
           <p>
@@ -156,20 +168,23 @@ export default function EnableNotifications({
           </p>
         )}
         {status === "available" && (
-          <p>Not enabled on this device.</p>
+          <p>
+            Not enabled here. Daily 9 AM digest + 24 h pre-alarm when you turn
+            it on.
+          </p>
         )}
         {status === "subscribed" && (
           <p>Enabled on this device.</p>
         )}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         {status === "available" && (
           <button
             type="button"
             onClick={enable}
             disabled={busy}
-            className="rounded bg-black px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-60"
+            className="rounded-[var(--radius-input)] bg-[color:var(--color-accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:opacity-50"
           >
             {busy ? "Enabling…" : "Enable on this device"}
           </button>
@@ -180,7 +195,7 @@ export default function EnableNotifications({
               type="button"
               onClick={fireTest}
               disabled={testPending}
-              className="rounded bg-black px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-60"
+              className="rounded-[var(--radius-input)] bg-[color:var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[color:var(--color-ink-2)] disabled:opacity-50"
             >
               {testPending ? "Sending…" : "Send test push"}
             </button>
@@ -188,7 +203,7 @@ export default function EnableNotifications({
               type="button"
               onClick={disable}
               disabled={busy}
-              className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-800 transition-colors hover:border-neutral-500 disabled:opacity-60"
+              className="rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[color:var(--color-ink-2)] transition hover:border-[color:var(--color-line-strong)] hover:text-[color:var(--color-ink)] disabled:opacity-50"
             >
               {busy ? "…" : "Disable on this device"}
             </button>
@@ -196,9 +211,13 @@ export default function EnableNotifications({
         )}
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-2 text-xs text-[color:var(--color-danger)]">{error}</p>
+      )}
       {testResult && (
-        <p className="mt-2 text-xs text-neutral-500">{testResult}</p>
+        <p className="mt-2 text-xs text-[color:var(--color-ink-3)]">
+          {testResult}
+        </p>
       )}
     </div>
   );

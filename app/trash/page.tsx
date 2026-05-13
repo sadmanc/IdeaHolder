@@ -1,10 +1,9 @@
 import { createServerClient, type Idea } from "@/lib/supabase";
 import { type Reminder, REMINDER_COLUMNS } from "@/lib/reminders";
-import Logo from "@/components/Logo";
 import NavTabs from "@/components/NavTabs";
+import PageHeader from "@/components/PageHeader";
 import TrashList from "@/components/TrashList";
 import TrashRemindersList from "@/components/TrashRemindersList";
-import { logout } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -27,46 +26,43 @@ export default async function TrashPage() {
   const reminders = (remindersRes.data ?? []) as Reminder[];
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8 sm:py-12">
-      <header className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <Logo size={28} />
-          <h1 className="text-xl font-semibold tracking-tight">IdeaHolder</h1>
-        </div>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="text-xs text-neutral-500 transition-colors hover:text-neutral-900"
-          >
-            Log out
-          </button>
-        </form>
-      </header>
+    <main className="mx-auto max-w-2xl px-5 py-10 sm:py-14">
+      <PageHeader subtitle="Restore or delete forever" />
 
       <NavTabs active="trash" />
 
-      <p className="mb-6 text-xs text-neutral-500">
-        Restored items reappear in their list with their original number.
+      <p className="mb-6 text-sm text-[color:var(--color-ink-3)]">
+        Restored items return to their list with their original number.
         Permanently deleted items are gone.
       </p>
 
       {(ideasRes.error || remindersRes.error) && (
-        <p className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="mb-4 rounded-[var(--radius-input)] border border-[color:var(--color-danger)]/30 bg-[color:var(--color-danger)]/5 px-3 py-2 text-sm text-[color:var(--color-danger)]">
           Couldn&apos;t load trash:{" "}
           {ideasRes.error?.message ?? remindersRes.error?.message}
         </p>
       )}
 
       <section className="mb-8">
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-          Deleted ideas {ideas.length > 0 ? `(${ideas.length})` : ""}
+        <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-ink-3)]">
+          Deleted ideas{" "}
+          {ideas.length > 0 && (
+            <span className="text-[color:var(--color-ink-4)]">
+              ({ideas.length})
+            </span>
+          )}
         </h2>
         <TrashList ideas={ideas} />
       </section>
 
       <section>
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-          Deleted reminders {reminders.length > 0 ? `(${reminders.length})` : ""}
+        <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-ink-3)]">
+          Deleted reminders{" "}
+          {reminders.length > 0 && (
+            <span className="text-[color:var(--color-ink-4)]">
+              ({reminders.length})
+            </span>
+          )}
         </h2>
         <TrashRemindersList reminders={reminders} />
       </section>

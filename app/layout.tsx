@@ -4,13 +4,13 @@ import RegisterServiceWorker from "@/components/RegisterServiceWorker";
 
 export const metadata: Metadata = {
   title: "IdeaHolder",
-  description: "Your personal idea bucket.",
+  description: "Capture random ideas before they slip. Expand the good ones.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#fafaf9",
+  themeColor: "#faf9f6",
 };
 
 export default function RootLayout({

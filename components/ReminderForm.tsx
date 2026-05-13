@@ -19,9 +19,7 @@ export default function ReminderForm() {
   const [showDeadline, setShowDeadline] = useState(false);
   const [deadlineLocal, setDeadlineLocal] = useState("");
 
-  const isoDeadline = deadlineLocal
-    ? safeIsoFromLocal(deadlineLocal)
-    : "";
+  const isoDeadline = deadlineLocal ? safeIsoFromLocal(deadlineLocal) : "";
 
   useEffect(() => {
     if (state.ok) {
@@ -41,24 +39,28 @@ export default function ReminderForm() {
   };
 
   return (
-    <form ref={formRef} action={formAction} className="mb-6">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="mb-6 rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition focus-within:shadow-[var(--shadow-md)]"
+    >
       <textarea
         ref={textareaRef}
         name="content"
         rows={3}
-        placeholder="What's the reminder? (⌘/Ctrl + Enter to save)"
-        className="w-full resize-y rounded border border-neutral-300 bg-white p-3 text-base leading-snug focus:border-neutral-500 focus:outline-none"
+        placeholder="What should you not forget?"
+        className="w-full resize-y rounded-[var(--radius-input)] bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-[color:var(--color-ink)] placeholder:text-[color:var(--color-ink-4)] focus:outline-none"
         onKeyDown={onKeyDown}
       />
 
-      <div className="mt-2">
+      <div className="mt-2 flex items-center gap-2 text-xs">
         {showDeadline ? (
-          <div className="flex items-center gap-2">
+          <>
             <input
               type="datetime-local"
               value={deadlineLocal}
               onChange={(e) => setDeadlineLocal(e.target.value)}
-              className="rounded border border-neutral-300 bg-white px-2 py-1 text-sm focus:border-neutral-500 focus:outline-none"
+              className="rounded-[var(--radius-input)] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-2 py-1 text-sm text-[color:var(--color-ink)] focus:outline-none"
             />
             <input type="hidden" name="deadline" value={isoDeadline} />
             <button
@@ -67,16 +69,16 @@ export default function ReminderForm() {
                 setShowDeadline(false);
                 setDeadlineLocal("");
               }}
-              className="text-xs text-neutral-500 transition-colors hover:text-neutral-900"
+              className="text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
             >
-              Remove
+              Remove deadline
             </button>
-          </div>
+          </>
         ) : (
           <button
             type="button"
             onClick={() => setShowDeadline(true)}
-            className="text-xs text-neutral-500 transition-colors hover:text-neutral-900"
+            className="text-[color:var(--color-ink-3)] transition hover:text-[color:var(--color-ink)]"
           >
             + Add deadline
           </button>
@@ -84,16 +86,21 @@ export default function ReminderForm() {
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-3">
-        <span className="min-h-[1.25rem] text-xs text-red-600">
+        <span className="min-h-[1.25rem] text-xs text-[color:var(--color-danger)]">
           {state.error}
         </span>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-60"
-        >
-          {pending ? "Saving…" : "Save"}
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="hidden text-[11px] text-[color:var(--color-ink-4)] sm:inline">
+            ⌘ + Enter to save
+          </span>
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-[var(--radius-input)] bg-[color:var(--color-accent)] px-4 py-1.5 text-sm font-medium text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:opacity-50"
+          >
+            {pending ? "Saving…" : "Save reminder"}
+          </button>
+        </div>
       </div>
     </form>
   );
